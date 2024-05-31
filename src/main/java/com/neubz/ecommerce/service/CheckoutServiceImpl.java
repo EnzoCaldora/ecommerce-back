@@ -6,7 +6,6 @@ import com.neubz.ecommerce.dto.PurchaseResponse;
 import com.neubz.ecommerce.entity.Customer;
 import com.neubz.ecommerce.entity.Order;
 import com.neubz.ecommerce.entity.OrderItem;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import java.util.UUID;
 @Service
 public class CheckoutServiceImpl implements CheckoutService{
 
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
     public CheckoutServiceImpl(CustomerRepository customerRepository){
         this.customerRepository = customerRepository;
@@ -43,6 +42,18 @@ public class CheckoutServiceImpl implements CheckoutService{
 
         // populate customer with order
         Customer customer = purchase.getCustomer();
+
+        // check if this is an existing customer
+        String theEmail = customer.getEmail();
+
+        Customer customerFromDB = customerRepository.findByEmail(theEmail);
+
+        if(customerFromDB != null){
+            // we found them... let's assign them accordingly
+            customer = customerFromDB;
+
+        }
+
         customer.add(order);
 
         // save to the database

@@ -5,7 +5,6 @@ import com.neubz.ecommerce.dto.PurchaseResponse;
 import com.neubz.ecommerce.service.CheckoutService;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("http://localhost:4200")
 @RestController
 @RequestMapping("/api/checkout")
 public class CheckoutController {

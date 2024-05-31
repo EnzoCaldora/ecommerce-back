@@ -1,12 +1,10 @@
 package com.neubz.ecommerce.config;
 
-import com.neubz.ecommerce.entity.Country;
-import com.neubz.ecommerce.entity.Product;
-import com.neubz.ecommerce.entity.ProductCategory;
-import com.neubz.ecommerce.entity.State;
+import com.neubz.ecommerce.entity.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.metamodel.EntityType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
@@ -19,6 +17,9 @@ import java.util.Set;
 
 @Configuration
 public class myDataRestConfig implements RepositoryRestConfigurer {
+
+    @Value("${allowed.origins}")
+    private String[] theAllowedOrigins;
 
 
     private EntityManager entityManager;
@@ -47,10 +48,15 @@ public class myDataRestConfig implements RepositoryRestConfigurer {
         // disable HTTP methods for State: PUT, POST, DELETE
         disableHttpMethod(State.class, config, theUnsupportedActions);
 
+        // disable HTTP methods for Order: PUT, POST, DELETE
+        disableHttpMethod(Order.class, config, theUnsupportedActions);
 
 
         // Call an internal helper method to expose the ids
         exposeIds(config);
+
+        // configure cors mapping
+        cors.addMapping(config.getBasePath() + "/**").allowedOrigins(theAllowedOrigins);
     }
 
     private void disableHttpMethod(Class theClass, RepositoryRestConfiguration config, HttpMethod[] theUnsupportedActions) {
