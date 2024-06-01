@@ -27,6 +27,7 @@ public class CheckoutServiceImpl implements CheckoutService{
 
         // initialize stripe API with secret key
         Stripe.apiKey = stripeSecretKey;
+
     }
 
     @Override
@@ -81,6 +82,8 @@ public class CheckoutServiceImpl implements CheckoutService{
         params.put("amount", paymentinfo.getAmount());
         params.put("currency", paymentinfo.getCurrency());
         params.put("payment_method_types", paymentMethodTypes);
+        params.put("description", "Luv2Shop purchase");
+        params.put("receipt_email", paymentinfo.getReceiptEmail());
 
         return PaymentIntent.create(params);
     }
